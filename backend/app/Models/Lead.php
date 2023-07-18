@@ -9,5 +9,6 @@ class Lead extends Model
 {
     use HasFactory;
 
-    protected $casts = ['last_sync_time' => 'datetime'];
+    protected $casts = ['last_sync_time' => 'datetime', 'updated_at' => 'datetime', 'created_at' => 'datetime'];
+    protected $guarded = ['_id', 'updated_at', 'created_at'];
 }

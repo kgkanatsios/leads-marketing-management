@@ -20,7 +20,7 @@ class CreateLeadsTable extends Migration
             $table->string('email', 255)->index();
             $table->boolean('consent')->default(false);
             $table->boolean('needs_sync')->default(true);
-            $table->dateTime('last_sync_time');
+            $table->dateTime('last_sync_time')->nullable();
             $table->timestamps();
         });
     }

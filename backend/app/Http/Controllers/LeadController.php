@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lead;
+use App\Exceptions\LeadNotFoundException;
 use App\Http\Requests\StoreLeadRequest;
 use App\Http\Requests\UpdateLeadRequest;
+use App\Http\Resources\LeadCollection;
+use App\Http\Resources\LeadResource;
+use App\Interfaces\Repositories\LeadRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LeadController extends Controller
 {
+    private $repository;
+
+    public function __construct(LeadRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,17 +26,9 @@ class LeadController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $leads = $this->repository::all();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return new LeadCollection($leads);
     }
 
     /**
@@ -36,51 +39,60 @@ class LeadController extends Controller
      */
     public function store(StoreLeadRequest $request)
     {
-        //
+        $lead = $this->repository::create($request->input());
+
+        return new LeadResource($lead);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Lead  $lead
+     * @param  string $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Lead $lead)
+    public function show(string $id)
     {
-        //
-    }
+        try {
+            $lead = $this->repository::findById($id);
+        } catch (ModelNotFoundException $e) {
+            throw new LeadNotFoundException();
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Lead  $lead
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Lead $lead)
-    {
-        //
+        return new LeadResource($lead);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateLeadRequest  $request
-     * @param  \App\Models\Lead  $lead
+     * @param  string $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateLeadRequest $request, Lead $lead)
+    public function update(UpdateLeadRequest $request, string $id)
     {
-        //
+        try {
+            $lead = $this->repository::updateById($id, $request->input());
+        } catch (ModelNotFoundException $e) {
+            throw new LeadNotFoundException();
+        }
+
+        return new LeadResource($lead);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Lead  $lead
+     * @param  string $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Lead $lead)
+    public function destroy(string $id)
     {
-        //
+        try {
+            $lead = $this->repository::destroyById($id);
+        } catch (ModelNotFoundException $e) {
+            throw new LeadNotFoundException();
+        }
+
+        return response()->json([], 204);
     }
 }
