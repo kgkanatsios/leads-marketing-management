@@ -12,4 +12,5 @@ interface LeadRepositoryInterface
     public static function updateById($id, $data = []): Lead;
     public static function create($data = []): Lead;
     public static function destroyById($id): bool;
+    public static function updateNeedsSyncById($id, $needs_sync): Lead;
 }

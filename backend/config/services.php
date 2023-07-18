@@ -30,4 +30,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'email_marketing' => [
+        'driver' =>  env('EM_DRIVER', 'mailchimp'),
+        'mailchimp' => [
+            'api_key' => env('EM_MAILCHIMP_API_KEY'),
+            'server' => env('EM_MAILCHIMP_SERVER'),
+            'list_id' => env('EM_MAILCHIMP_LIST_ID'),
+        ]
+    ],
+
 ];

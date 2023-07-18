@@ -8,6 +8,9 @@ use App\Http\Requests\UpdateLeadRequest;
 use App\Http\Resources\LeadCollection;
 use App\Http\Resources\LeadResource;
 use App\Interfaces\Repositories\LeadRepositoryInterface;
+use App\Jobs\EmailMarketingMemberAddJob;
+use App\Jobs\EmailMarketingMemberDeleteJob;
+use App\Jobs\EmailMarketingMemberSyncJob;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LeadController extends Controller
@@ -40,6 +43,7 @@ class LeadController extends Controller
     public function store(StoreLeadRequest $request)
     {
         $lead = $this->repository::create($request->input());
+        EmailMarketingMemberAddJob::dispatch($lead->id)->onQueue('addMarketingMember');
 
         return new LeadResource($lead);
     }
@@ -76,6 +80,8 @@ class LeadController extends Controller
             throw new LeadNotFoundException();
         }
 
+        EmailMarketingMemberSyncJob::dispatch($lead->id)->onQueue('syncMarketingMember');
+
         return new LeadResource($lead);
     }
 
@@ -88,10 +94,13 @@ class LeadController extends Controller
     public function destroy(string $id)
     {
         try {
-            $lead = $this->repository::destroyById($id);
+            $lead = $this->repository::findById($id);
+            $this->repository::destroyById($id);
         } catch (ModelNotFoundException $e) {
             throw new LeadNotFoundException();
         }
+
+        EmailMarketingMemberDeleteJob::dispatch($id, $lead->email)->onQueue('deleteMarketingMember');
 
         return response()->json([], 204);
     }
