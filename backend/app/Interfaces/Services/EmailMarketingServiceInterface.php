@@ -6,8 +6,8 @@ use App\DTOs\Services\EmailMarketing\MemberDTO;
 
 interface EmailMarketingServiceInterface
 {
-    public function getMember($email): ?MemberDTO;
-    public function addMember(MemberDTO $member): bool;
-    public function updateMember(MemberDTO $member): bool;
+    public function getMember(MemberDTO $member): ?MemberDTO;
+    public function addMember(MemberDTO $member): ?MemberDTO;
+    public function updateMember(MemberDTO $member): ?MemberDTO;
     public function deleteMember(MemberDTO $member): bool;
 }

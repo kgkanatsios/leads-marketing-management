@@ -16,12 +16,12 @@ class EmailMarketingService
         $this->emailMarketingService = $emailMarketingService;
     }
 
-    function add(): bool
+    function add(): ?MemberDTO
     {
         return $this->emailMarketingService->addMember($this->member);
     }
 
-    function update(): bool
+    function update(): ?MemberDTO
     {
         return $this->emailMarketingService->updateMember($this->member);
     }

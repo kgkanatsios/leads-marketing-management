@@ -37,12 +37,12 @@ class EmailMarketingMemberAddJob implements ShouldQueue, ShouldBeUnique
     public function handle(LeadRepositoryInterface $leadRepository)
     {
         $lead = $leadRepository::findById($this->lead_id);
-        $member =  new MemberDTO($lead->first_name, $lead->last_name, $lead->email, $lead->consent);
+        $member =  new MemberDTO($lead->email_platform_hash, $lead->first_name, $lead->last_name, $lead->email, $lead->consent);
         $emailMarketingService = App::makeWith(EmailMarketingService::class, ['member' => $member]);
         $memberAdded = $emailMarketingService->add();
 
-        if ($memberAdded) {
-            $lead = $leadRepository::updateNeedsSyncById($this->lead_id, false);
+        if (!empty($memberAdded)) {
+            $lead = $leadRepository::updateNeedsSyncById($this->lead_id, false, $memberAdded->getEmailPlatformHash());
         }
     }
 

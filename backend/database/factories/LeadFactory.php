@@ -13,10 +13,13 @@ class LeadFactory extends Factory
      */
     public function definition()
     {
+        $email = $this->faker->unique()->safeEmail();
+
         return [
+            'email_platform_hash' => md5(strtolower($email)),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'email' => $email,
             'consent' => $this->faker->boolean(),
             'needs_sync' => $this->faker->boolean(),
             'last_sync_time' => $this->faker->dateTimeBetween('-1 week', '-1 minute'),

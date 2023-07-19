@@ -38,6 +38,7 @@ class LeadRepository implements LeadRepositoryInterface
     {
         $lead = new Lead();
 
+        $lead->email_platform_hash = null;
         $lead->first_name = $data['first_name'];
         $lead->last_name = $data['last_name'];
         $lead->email = $data['email'];
@@ -55,13 +56,13 @@ class LeadRepository implements LeadRepositoryInterface
         return LeadRepository::findById($id)->delete();
     }
 
-    public static function updateNeedsSyncById($id, $needs_sync): Lead
+    public static function updateNeedsSyncById($id, $needs_sync, $email_platform_hash): Lead
     {
         $lead = LeadRepository::findById($id);
 
         $lead->needs_sync = $needs_sync;
-        if (!$needs_sync)
-            $lead->last_sync_time = Carbon::now();
+        $lead->last_sync_time = Carbon::now();
+        $lead->email_platform_hash = $email_platform_hash;
 
         $lead->save();
 
@@ -70,11 +71,11 @@ class LeadRepository implements LeadRepositoryInterface
 
     public static function getNewLeadsForSync(): Collection
     {
-        return Lead::where('needs_sync', true)->whereNull('last_sync_time')->get();
+        return Lead::where('needs_sync', true)->whereNull('email_platform_hash')->get();
     }
 
     public static function getUpdatedLeadsForSync(): Collection
     {
-        return Lead::where('needs_sync', true)->whereNotNull('last_sync_time')->get();
+        return Lead::where('needs_sync', true)->whereNotNull('email_platform_hash')->get();
     }
 }

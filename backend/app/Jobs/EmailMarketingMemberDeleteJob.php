@@ -16,17 +16,18 @@ class EmailMarketingMemberDeleteJob implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $lead_id, $email;
+    private $lead_id, $email, $email_platform_hash;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $lead_id, string $email)
+    public function __construct(string $lead_id, string $email, string $email_platform_hash)
     {
         $this->lead_id = $lead_id;
         $this->email = $email;
+        $this->email_platform_hash = $email_platform_hash;
     }
 
     /**
@@ -36,7 +37,7 @@ class EmailMarketingMemberDeleteJob implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
-        $member =  new MemberDTO("", "", $this->email, false);
+        $member =  new MemberDTO($this->email_platform_hash, null, null, $this->email, false);
         $emailMarketingService = App::makeWith(EmailMarketingService::class, ['member' => $member]);
         $memberDeleted = $emailMarketingService->delete();
     }

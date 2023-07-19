@@ -100,7 +100,7 @@ class LeadController extends Controller
             throw new LeadNotFoundException();
         }
 
-        EmailMarketingMemberDeleteJob::dispatch($id, $lead->email)->onQueue('deleteMarketingMember');
+        EmailMarketingMemberDeleteJob::dispatch($id, $lead->email, $lead->email_platform_hash)->onQueue('deleteMarketingMember');
 
         return response()->json([], 204);
     }
