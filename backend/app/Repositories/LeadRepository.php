@@ -43,6 +43,7 @@ class LeadRepository implements LeadRepositoryInterface
         $lead->email = $data['email'];
         $lead->consent = $data['consent'];
         $lead->needs_sync = true;
+        $lead->last_sync_time = null;
 
         $lead->save();
 
@@ -65,5 +66,15 @@ class LeadRepository implements LeadRepositoryInterface
         $lead->save();
 
         return $lead;
+    }
+
+    public static function getNewLeadsForSync(): Collection
+    {
+        return Lead::where('needs_sync', true)->whereNull('last_sync_time')->get();
+    }
+
+    public static function getUpdatedLeadsForSync(): Collection
+    {
+        return Lead::where('needs_sync', true)->whereNotNull('last_sync_time')->get();
     }
 }

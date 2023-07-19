@@ -15,7 +15,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('lead:email-marketing-new-member-dispatcher')->everyTwoHours();
+        $schedule->command('lead:email-marketing-update-member-dispatcher')->everyTwoHours();
+
+        $schedule->command('queue:work --queue=addMarketingMember --max-jobs=25 --stop-when-empty')->everyMinute();
+        $schedule->command('queue:work --queue=syncMarketingMember --max-jobs=25 --stop-when-empty')->everyMinute();
+        $schedule->command('queue:work --queue=deleteMarketingMember --max-jobs=25 --stop-when-empty')->everyMinute();
     }
 
     /**
@@ -25,7 +30,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
