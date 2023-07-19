@@ -23,7 +23,7 @@ class EmailMarketingMemberDeleteJob implements ShouldQueue, ShouldBeUnique
      *
      * @return void
      */
-    public function __construct(string $lead_id, $email)
+    public function __construct(string $lead_id, string $email)
     {
         $this->lead_id = $lead_id;
         $this->email = $email;
