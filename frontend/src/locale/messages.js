@@ -1,12 +1,18 @@
 const messages = {
   en: {
     message: {
-      lead: 'Lead | Leads'
-    }
-  },
-  el: {
-    message: {
-      lead: 'Lead (el) | Leads (el)'
+      logo: {
+        letters: 'LW',
+        text: 'LW Assignment'
+      },
+      lead: {
+        menuLabel: 'Our Leads',
+        marketingConsent: 'Marketing Consent',
+        button: {
+          edit: 'Edit'
+        }
+      },
+      loading: 'Loading...'
     }
   }
 }
