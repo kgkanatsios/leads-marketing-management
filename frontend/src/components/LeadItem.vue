@@ -1,7 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useModalStore } from '../stores/ModalStore'
+import { useLeadStore } from '../stores/LeadStore'
 import PrimaryButton from './buttons/PrimaryButton.vue'
-import InputTextbox from './form-fields/InputTextbox.vue'
+import InputCheckbox from './form-fields/InputCheckbox.vue'
 
 const props = defineProps({
   item: {
@@ -9,6 +11,9 @@ const props = defineProps({
     required: true
   }
 })
+
+const leadStore = useLeadStore()
+const modalStore = useModalStore()
 
 const leadId = ref(props.item.data.lead_id)
 const email = ref(props.item.data.attributes.email)
@@ -23,6 +28,20 @@ const fullName = computed(() => {
 const avatarLetters = computed(() => {
   return firstName.value.charAt(0) + lastName.value.charAt(0)
 })
+
+function showEditMemberModal() {
+  modalStore.initEditMemberModal(
+    {
+      lead_id: leadId.value,
+      first_name: firstName.value,
+      last_name: lastName.value,
+      email: email.value,
+      consent: marketingConsent.value
+    },
+    leadStore.updateLead
+  )
+  modalStore.setModalIsShowing(true)
+}
 </script>
 
 <template>
@@ -43,14 +62,14 @@ const avatarLetters = computed(() => {
           {{ email }}
         </p>
       </div>
-      <InputTextbox
+      <InputCheckbox
         :checked="marketingConsent"
         disabled
         :id="'marketing-consent-' + leadId"
         :label="$t('message.lead.marketingConsent')"
       />
       <div class="inline-flex items-center justify-center font-semibold text-gray-900">
-        <PrimaryButton @click="console.log(item)" :text="$t('message.lead.button.edit')" />
+        <PrimaryButton @click="showEditMemberModal" :text="$t('message.lead.button.edit')" />
       </div>
     </div>
   </li>

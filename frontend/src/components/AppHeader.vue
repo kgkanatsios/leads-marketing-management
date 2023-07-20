@@ -13,15 +13,22 @@ import LayoutContainer from './LayoutContainer.vue'
           >
             <span class="font-medium text-gray-600">{{ $t('message.logo.letters') }}</span>
           </div>
-          <span class="text-xl">{{ $t('message.logo.text') }}</span>
+          <div class="m-auto">
+            <span class="text-xl block">{{ $t('message.logo.title') }}</span>
+            <span class="text-xs block">{{ $t('message.logo.subtitle') }}</span>
+          </div>
         </div>
 
         <div class="main-menu ml-auto">
           <ul class="flex m-auto flex-wrap items-center justify-center text-gray-900">
-            <RouterLink class="mr-4 hover:text-cyan-700 md:mr-6" to="/">Home</RouterLink>
-            <RouterLink class="mr-4 hover:text-cyan-700 md:mr-6" to="/about">About</RouterLink>
+            <RouterLink class="mr-4 hover:text-cyan-700 md:mr-6" to="/">{{
+              $t('message.menu.home')
+            }}</RouterLink>
+            <RouterLink class="mr-4 hover:text-cyan-700 md:mr-6" to="/about">{{
+              $t('message.menu.about')
+            }}</RouterLink>
             <RouterLink class="hover:text-cyan-700" :to="{ name: 'leadsList' }">{{
-              $t('message.lead.menuLabel')
+              $t('message.menu.leads')
             }}</RouterLink>
           </ul>
         </div>

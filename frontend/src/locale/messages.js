@@ -3,13 +3,37 @@ const messages = {
     message: {
       logo: {
         letters: 'LW',
-        text: 'LW Assignment'
+        title: 'LW Assignment',
+        subtitle: 'by Konstantinos Gkanatsios'
+      },
+      menu: {
+        home: 'Home',
+        about: 'About',
+        leads: 'All Leads'
       },
       lead: {
-        menuLabel: 'Our Leads',
         marketingConsent: 'Marketing Consent',
         button: {
-          edit: 'Edit'
+          edit: 'Edit',
+          subscribe: 'Subscribe',
+          cancel: 'Cancel'
+        },
+        modal: {
+          title: 'Stay up to date!',
+          subtitle: 'Subscribe to our newsletters'
+        },
+        form: {
+          field: {
+            firstName: 'First name',
+            lastName: 'Last name',
+            email: 'Your email',
+            marketingConsent: 'Marketing Consent'
+          }
+        }
+      },
+      modal: {
+        button: {
+          close: 'Close'
         }
       },
       loading: 'Loading...'

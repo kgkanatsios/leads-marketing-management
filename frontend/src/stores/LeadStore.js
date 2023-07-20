@@ -34,12 +34,24 @@ export const useLeadStore = defineStore('LeadStore', {
 
     setIsLoading(isLoading) {
       this.isLoading = isLoading
+    },
+
+    async addLead(lead) {
+      try {
+        const response = await axios.post('/leads', lead)
+        this.leads.push(response.data)
+        return response.data
+      } catch (err) {
+        return err.response.data
+      }
+    },
+
+    updateLead(lead) {
+      console.log(lead)
+    },
+
+    deleteLead(lead) {
+      console.log(lead)
     }
-
-    // addLead(lead) {},
-
-    // updateLead(lead) {},
-
-    // deleteLead(lead) {}
   }
 })
