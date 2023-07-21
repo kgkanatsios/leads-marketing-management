@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreLeadRequest extends FormRequest
 {
@@ -14,6 +15,20 @@ class StoreLeadRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'first_name' => Str::title($this->first_name),
+            'last_name' => Str::title($this->last_name),
+            'email' => Str::lower($this->email),
+        ]);
     }
 
     /**
