@@ -24,9 +24,6 @@ import LayoutContainer from './LayoutContainer.vue'
             <RouterLink class="mr-4 hover:text-cyan-700 md:mr-6" to="/">{{
               $t('message.menu.home')
             }}</RouterLink>
-            <RouterLink class="mr-4 hover:text-cyan-700 md:mr-6" to="/about">{{
-              $t('message.menu.about')
-            }}</RouterLink>
             <RouterLink class="hover:text-cyan-700" :to="{ name: 'leadsList' }">{{
               $t('message.menu.leads')
             }}</RouterLink>
