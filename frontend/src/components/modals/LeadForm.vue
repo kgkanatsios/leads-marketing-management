@@ -5,6 +5,9 @@ import PrimaryButton from '../buttons/PrimaryButton.vue'
 import DangerButton from '../buttons/DangerButton.vue'
 import InputText from '../form-fields/InputText.vue'
 import InputCheckbox from '../form-fields/InputCheckbox.vue'
+import LoadingSpinner from '../LoadingSpinner.vue'
+import SuccessAlert from '../alerts/SuccessAlert.vue'
+import DangerAlert from '../alerts/DangerAlert.vue'
 
 defineProps({
   onCloseClickHandler: {
@@ -15,10 +18,30 @@ defineProps({
     type: Function,
     required: true
   },
-  firstName: String,
-  lastName: String,
-  email: String,
-  marketingConsent: Boolean
+  firstName: {
+    type: String,
+    default: ''
+  },
+  lastName: {
+    type: String,
+    default: ''
+  },
+  email: {
+    type: String,
+    default: ''
+  },
+  marketingConsent: {
+    type: Boolean,
+    default: false
+  },
+  isLoading: {
+    type: Boolean,
+    required: true
+  },
+  messages: {
+    type: Array,
+    default: () => []
+  }
 })
 
 defineEmits(['update:firstName', 'update:lastName', 'update:email', 'update:marketingConsent'])
@@ -33,6 +56,14 @@ defineEmits(['update:firstName', 'update:lastName', 'update:email', 'update:mark
         <h4 class="text-xs text-gray-700">{{ $t('message.lead.modal.subtitle') }}</h4>
       </div>
     </template>
+
+    <component
+      v-for="(message, index) in messages"
+      :key="index"
+      :is="message.component == 'success' ? SuccessAlert : DangerAlert"
+    >
+      <span>{{ message.translation ? $t(message.message) : message.message }}</span>
+    </component>
 
     <InputText
       :id="'first_name'"
@@ -68,6 +99,9 @@ defineEmits(['update:firstName', 'update:lastName', 'update:email', 'update:mark
     <template #footer-content>
       <DangerButton @click="onCloseClickHandler" :text="$t('message.lead.button.cancel')" />
       <PrimaryButton @click="onSubmitHandler" :text="$t('message.lead.button.subscribe')" />
+    </template>
+    <template #outer-content>
+      <LoadingSpinner v-if="isLoading" />
     </template>
   </ModalContainer>
 </template>

@@ -8,8 +8,10 @@ defineProps({
 </script>
 
 <template>
-  <div class="z-20 fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-2/3 md:w-1/2 xl:w-1/3">
-    <div class="relative bg-white rounded-md shadow-md">
+  <div
+    class="z-20 fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-2/3 md:w-1/2 xl:w-1/3"
+  >
+    <div class="relative bg-white rounded-md shadow-md overflow-hidden">
       <div class="flex items-center justify-between p-4 border-b">
         <slot name="header-title"></slot>
         <button
@@ -41,6 +43,7 @@ defineProps({
       <div class="flex items-center justify-between p-4 space-x-2 border-t border-gray-200">
         <slot name="footer-content"></slot>
       </div>
+      <slot name="outer-content"></slot>
     </div>
   </div>
 </template>

@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const useModalStore = defineStore('ModalStore', {
   state: () => {
     return {
+      modalComponent: 'LeadForm',
       modalIsShowing: false,
       modalProps: {
         data: {
@@ -14,6 +15,7 @@ export const useModalStore = defineStore('ModalStore', {
         },
         submitAction: () => {}
       },
+      modalMessages: [],
       modalIsLoading: false
     }
   },
@@ -21,14 +23,24 @@ export const useModalStore = defineStore('ModalStore', {
   getters: {
     getModalIsShowing: (state) => state.modalIsShowing,
     getModalProps: (state) => state.modalProps,
-    getModalIsLoading: (state) => state.modalIsLoading
+    getModalIsLoading: (state) => state.modalIsLoading,
+    getModalComponent: (state) => state.modalComponent,
+    getModalMessages: (state) => state.modalMessages
   },
 
   actions: {
     async submitModal() {
+      this.setModalIsLoading(true)
       const res = await this.modalProps.submitAction.apply(null, [this.modalProps.data])
-      console.log(res)
+      this.setModalMessages(res.messages)
+      this.setModalIsLoading(false)
+      if (res.result == 'error') {
+        return
+      }
       this.setModalIsShowing(false)
+    },
+    setModalComponent(modalComponent) {
+      this.modalComponent = modalComponent
     },
     setModalIsShowing(modalIsShowing) {
       this.modalIsShowing = modalIsShowing
@@ -42,12 +54,23 @@ export const useModalStore = defineStore('ModalStore', {
     setModalIsLoading(modalIsLoading) {
       this.modalIsLoading = modalIsLoading
     },
+    setModalMessages(modalMessages) {
+      this.modalMessages = modalMessages
+    },
     initAddMemberModal(action) {
       this.$reset()
+      this.setModalComponent('LeadForm')
       this.setModalPropsSubmitAction(action)
     },
     initEditMemberModal(data, action) {
       this.$reset()
+      this.setModalComponent('LeadForm')
+      this.setModalPropsData(data)
+      this.setModalPropsSubmitAction(action)
+    },
+    initDeletMemberModal(data, action) {
+      this.$reset()
+      this.setModalComponent('LeadDelete')
       this.setModalPropsData(data)
       this.setModalPropsSubmitAction(action)
     }
