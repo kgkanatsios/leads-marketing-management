@@ -48,6 +48,12 @@ return [
     */
 
     'channels' => [
+        'job-error-logs' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/job-error-logs.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
         'mailchimp-error-logs' => [
             'driver' => 'single',
             'path' => storage_path('logs/mailchimp-error-logs.log'),

@@ -8,10 +8,12 @@ use App\Services\EmailMarketingServices\EmailMarketingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 
 class EmailMarketingMemberSyncJob implements ShouldQueue, ShouldBeUnique
 {
@@ -36,7 +38,13 @@ class EmailMarketingMemberSyncJob implements ShouldQueue, ShouldBeUnique
      */
     public function handle(LeadRepositoryInterface $leadRepository)
     {
-        $lead = $leadRepository::findById($this->lead_id);
+        try {
+            $lead = $leadRepository::findById($this->lead_id);
+        } catch (ModelNotFoundException $e) {
+            Log::channel('job-error-logs')->error('Sync lead job: Lead not found', [$e]);
+            return;
+        }
+
         $member =  new MemberDTO($lead->email_platform_hash, $lead->first_name, $lead->last_name, $lead->email, $lead->consent);
         $emailMarketingService = App::makeWith(EmailMarketingService::class, ['member' => $member]);
         $memberUpdated = $emailMarketingService->update();
