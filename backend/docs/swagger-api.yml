@@ -1,0 +1,250 @@
+openapi: 3.0.3
+info:
+  title: LW - Assignment for Full-Stack Software Engineer | Konstantinos Gkanatsios
+  description: |-
+    This is the API documentation for the Leads management system.
+  contact:
+    email: kgkanatsios@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:8000/api
+tags:
+  - name: lead
+    description: Operations about Leads
+paths:
+  /leads:
+    get:
+      tags:
+        - lead
+      summary: Get all Leads
+      description: Get all Leads from our database
+      operationId: getAllLeads
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leads'
+    post:
+      tags:
+        - lead
+      summary: Add a new Lead
+      description: Add a new Lead
+      operationId: addALeads
+      requestBody:
+        description: Create a new Lead
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadRequest'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+  /leads/{lead_id}:
+    get:
+      tags:
+        - lead
+      summary: Get a specific Lead
+      operationId: getALeads
+      parameters:
+        - name: lead_id
+          in: path
+          description: The Lead ID for the Lead that needs to be fetched
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Lead'
+        '404':
+          description: Lead not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadNotFound'
+    put:
+      tags:
+        - lead
+      summary: Update a specific Lead
+      operationId: updateALeads
+      parameters:
+        - name: lead_id
+          in: path
+          description: The Lead ID for the Lead that needs to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Create a new Lead
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadRequest'
+      responses:
+        '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Lead'
+        '404':
+          description: Lead not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadNotFound'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+    delete:
+      tags:
+        - lead
+      summary: Delete a specific Lead
+      operationId: deleteALeads
+      parameters:
+        - name: lead_id
+          in: path
+          description: The Lead ID for the Lead that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successful operation
+        '404':
+          description: Lead not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadNotFound'
+components:
+  schemas:
+    Lead:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              default: leads
+            lead_id:
+              type: string
+              example: a1b2c3d4e5f6g7
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: Konstantinos
+                last_name:
+                  type: string
+                  example: Gkanatsios
+                email:
+                  type: string
+                  example: kgkanatsios@gmail.com
+                consent:
+                  type: boolean
+                  description: Boolean field to define Lead's consent to send them emails for marketing purposes
+                needs_sync:
+                  type: boolean
+                  description: Boolean field to define if Lead needs data synchronization with the external marketing email platform
+                last_sync_time:
+                  type: string
+                  description: Human read time from the current time and the last Lead synchronization time (synchronization between our data and the external marketing email platform)
+                  example: 8 hours ago
+                updated_at:
+                  type: string
+                  description: Human read time from the current time and the last Lead update time
+                  example: 8 hours ago
+                created_at:
+                  type: string
+                  description: Human read time from the current time and the Lead's creation time
+                  example: 10 hours ago
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: http://127.0.0.1:8000/api/leads/a1b2c3d4e5f6g7
+    Leads:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lead'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: http://127.0.0.1:8000/api/leads
+    LeadRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: Konstantinos
+        last_name:
+          type: string
+          example: Gkanatsios
+        email:
+          type: string
+          example: kgkanatsios@gmail.com
+        consent:
+          type: boolean
+          description: Boolean field to define Lead's consent to send them emails for marketing purposes
+    ValidationError:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            code:
+              type: integer
+              format: int64
+              default: 422
+            title:
+              type: string
+              default: Validation Error
+            details:
+              type: string
+              default: Your request is malformed or missing fields.
+            meta:
+              type: object
+              description: Object with validation errors for each malformed or missing field
+    LeadNotFound:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            code:
+              type: integer
+              format: int64
+              default: 404
+            title:
+              type: string
+              default: Lead not found
+            details:
+              type: string
+              default: Unable to locate the lead with the given information.
